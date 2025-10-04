@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApeOut 🌪️ Moderator Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+      color: #fff;
+      background: radial-gradient(circle at top left, lightblue, black, #1a1a1a);
+      background-size: cover;
+      background-attachment: fixed;
+    }
+    header {
+      text-align: center;
+      padding: 50px 20px;
+      background: rgba(0,0,0,0.7);
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    h2 {
+      margin-top: 40px;
+      color: #4dc3ff;
+    }
+    .apply-btn {
+      display: block;
+      margin: 50px auto;
+      padding: 15px 40px;
+      font-size: 20px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .apply-btn:hover {
+      background: #0056b3;
+    }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      overflow-y: auto;
+    }
+    .modal-content {
+      background: #222;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 650px;
+      width: 90%;
+      margin: 50px auto;
+      color: #fff;
+    }
+    .close {
+      float: right;
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .circle-question {
+      margin: 20px 0;
+    }
+    .circle-option {
+      display: inline-block;
+      margin-right: 15px;
+    }
+    .circle-option input {
+      display: none;
+    }
+    .circle-option label {
+      display: inline-block;
+      width: 40px; height: 40px;
+      line-height: 40px;
+      border-radius: 50%;
+      background: #555;
+      text-align: center;
+      cursor: pointer;
+    }
+    .circle-option input:checked + label {
+      background: #28a745;
+      color: #fff;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ApeOut 🌪️ Storm Chasing</h1>
+    <p>Moderator Applications</p>
+  </header>
+
+  <div class="container">
+    <h2>Why We Need Moderators</h2>
+    <p>Our community is growing faster than the storms we chase... moderators are key to keeping the environment safe and enjoyable. They ensure rules are followed, players are respected, and chaos doesn’t take over. Moderators are our front line of defense in protecting the community experience.</p>
+
+    <h2>What You Get for Being a Moderator</h2>
+    <p>We value our staff and provide unique perks. Moderators gain access to exclusive staff-only cars, private storm-tracking tools, and recognition inside the community. As a moderator, you’re not just a player — you’re part of the backbone that keeps ApeOut thriving.</p>
+
+    <h2>How We Pay</h2>
+    <p>We reward our moderators for their time and commitment. Payment can be provided via <b>CashApp</b> for real money rewards, or through <b>Discord Nitro</b> subscriptions for those who prefer in-platform perks.</p>
+
+    <h2>Age Requirements</h2>
+    <p>Applicants must be at least <b>13 years old</b> to apply. Exceptions may be made only for those who can prove maturity and reliability. Age requirements are in place to ensure that all moderators are able to handle responsibility effectively.</p>
+
+    <button class="apply-btn" id="openModal">Apply for Moderator</button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="applyModal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h2>Moderator Application</h2>
+      <form id="applicationForm" enctype="multipart/form-data">
+        <label>Your Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Your Age:</label>
+        <input type="number" name="age" required>
+
+        <label>Date of Birth:</label>
+        <input type="date" name="dob" required>
+
+        <label>Upload Resume (PDF, DOC, RTF):</label>
+        <input type="file" name="resume" accept=".pdf,.doc,.docx,.rtf" required>
+
+        <div class="circle-question">
+          <p>Do you understand the responsibilities of being a moderator?</p>
+          <div class="circle-option"><input type="radio" name="understand" id="yes" value="Yes" required><label for="yes">Y</label></div>
+          <div class="circle-option"><input type="radio" name="understand" id="no" value="No"><label for="no">N</label></div>
+        </div>
+
+        <button type="submit" class="apply-btn">Submit Application</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById("applyModal");
+    const openModal = document.getElementById("openModal");
+    const closeModal = document.getElementById("closeModal");
+    const form = document.getElementById("applicationForm");
+
+    openModal.addEventListener("click", () => modal.style.display = "flex");
+    closeModal.addEventListener("click", () => modal.style.display = "none");
+    window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+
+    // Submit form -> send to backend
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const res = await fetch("/apply", {
+        method: "POST",
+        body: formData
+      });
+      if (res.ok) {
+        alert("✅ Application submitted! Check your email for confirmation.");
+        modal.style.display = "none";
+        form.reset();
+      } else {
+        alert("❌ Error submitting application.");
+      }
+    });
+  </script>
+</body>
+</html>
